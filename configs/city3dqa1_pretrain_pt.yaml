@@ -1,0 +1,90 @@
+###
+# City3DQA1 pretraining on rendered City-3DQA urban-mode train scenes.
+###
+
+name: "UniScene3D_City3DQA1"
+rng_seed: 42
+num_gpu: 1
+mode: "pretrain"
+note: "City3DQA1_UrbanTrainScenes_run1"
+num_views: 32
+naming_keywords: ["dataloader.batchsize", "task", "note", "time"]
+base_dir: "results"
+exp_dir: ""
+
+resume: False
+
+debug:
+  flag: False
+  debug_size: 20
+  hard_debug: False
+
+logger:
+  name: "wandb"
+  entity: ""
+
+data:
+  note: "City3DQA1"
+  pretrain: ["City3DQA1SpatialReferPT"]
+  args:
+    use_scene_cap: True
+  City3DQA1SpatialReferPT:
+    base_dir: "/data1/znn/Dataset_pk/CIty-3DQA/rendered_views_znn_piliang_pt"
+    text_base_dir: "/data1/znn/Dataset_pk/CIty-3DQA/rendered_views_znn_piliang"
+    cities: ["Longhua", "Qingdao", "Wuhu", "Yingrenshi"]
+    qa_split_filter:
+      enabled: True
+      qa_dir: "/data1/znn/Dataset_pk/CIty-3DQA/qa"
+      mode_name: "urban_mode"
+      split: "train"
+    image_size: 224
+    language: "en"
+    text_dir_name: "RGB_txt5"
+    scene_cap_max_views: 4
+
+task: "Pretrain"
+data_wrapper:
+  pretrain: "SceneDatasetWrapper"
+
+trainer: "UniScene3DTrainer"
+ckpt_path: "" ###中断接着训练
+pretrain_ckpt_path: "/data1/znn/CODE_pk/UniScene3D/checkpoints"
+chamfer_rankings_path: "/data1/znn/Dataset_pk/CIty-3DQA/rendered_views_znn_piliang/chamfer_rankings_city3dqa1.json"
+
+dataloader:
+  batchsize: 32   ##32
+  num_workers: 8   ##8
+  balance_dataset: False
+
+solver:
+  gradient_accumulation_steps: 1
+  epochs_per_save: 200
+  epochs_per_eval: 1
+  lr: 1e-4
+  grad_norm: 5.0
+  epochs: 3000
+  optim:
+    name: "AdamW"
+    args:
+      betas: [0.9, 0.98]
+      weight_decay: 0.05
+  sched:
+    name: "warmup_cosine"
+    args:
+      warmup_steps: 500
+      minimum_ratio: 0.1
+
+model:
+  name: "City3DQA1UniScene3D"
+  modality_dropout:
+    drop_rgb_prob: 0.0
+    drop_pointmap_prob: 0.0
+  pointmap_augmentation:
+    enabled: True
+    z_rotations_deg: [90, 180, 270]
+    scale_range: [0.75, 1.25]
+    translation_range: [-1.0, 1.0]
+  vision:
+    lr: 1e-4
+  loss_list: ["SceneViewPM_loss"]
+  vis_loss_list: ["SceneViewPM_loss"]

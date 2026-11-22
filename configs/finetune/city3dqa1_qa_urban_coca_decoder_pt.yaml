@@ -1,0 +1,111 @@
+# City3DQA1 urban generative QA with PT visual cache and CoCa-style decoder.
+name: "City3DQA1_QA_Urban_CoCaDecoder_pt"
+rng_seed: 42
+num_gpu: 1
+mode: "train"
+note: "urban_qa_coca_decoder_pt"
+naming_keywords: ["dataloader.batchsize", "task", "note", "time"]
+base_dir: "results"
+exp_dir: ""
+
+resume: False
+
+debug:
+  flag: False
+  hard_debug: False
+  debug_size: 20
+
+logger:
+  name: "wandb"
+  entity: ""
+  init_timeout: 300
+
+num_views: 50
+data:
+  train: ["City3DQA1QAUrbanCoCaDecoderPT"]
+  val: ["City3DQA1QAUrbanCoCaDecoderPT"]
+  test: ["City3DQA1QAUrbanCoCaDecoderPT"]
+  City3DQA1QAUrbanCoCaDecoderPT:
+    qa_dir: "/data1/znn/Dataset_pk/CIty-3DQA/qa"
+    cache_base_dir: "/data1/znn/Dataset_pk/CIty-3DQA/rendered_views_znn_piliang_pt"
+    mode_name: "urban_mode"
+    image_size: 224
+    num_views: 50
+    scene_cache_size: 4
+    max_target_length: 32
+    max_question_length: 128
+    unanswerable_text: "unknown"
+    train:
+      use_unanswer: True
+    val:
+      use_unanswer: True
+    test:
+      use_unanswer: True
+
+task: "City3DQA1_QA_Urban_CoCaDecoder_pt"
+data_wrapper:
+  train: "City3DQA1QAUrbanCoCaDecoderPTWrapper"
+  val: "City3DQA1QAUrbanCoCaDecoderPTWrapper"
+  test: "City3DQA1QAUrbanCoCaDecoderPTWrapper"
+
+trainer: "City3DQA1CoCaDecoderTrainer"
+pretrain_ckpt_path: "/data1/znn/CODE_pk/UniScene3D/results/UniScene3D_City3DQA1_b40_Pretrain_City3DQA1_City3DQA1_UrbanTrainScenes_run1/2026-06-19-01:48:45.816901/ckpt/ckpt_2000.pth"
+ckpt_path: ""
+
+dataloader:
+  batchsize: 16
+  batchsize_eval: 16
+  num_workers: 4
+
+solver:
+  gradient_accumulation_steps: 1
+  epochs_per_save: 1
+  epochs_per_eval: 1
+  lr: 1e-4
+  grad_norm: 5.0
+  epochs: 10
+  optim:
+    name: "AdamW"
+    args:
+      betas: [0.9, 0.98]
+  sched:
+    name: "warmup_cosine"
+    args:
+      warmup_steps: 1000
+
+eval:
+  name: "City3DQA1QAUrban50ViewCoCaDecoderPTEval"
+  save: False
+
+model:
+  name: "City3DQA1QAUrbanCoCaDecoderPTUniScene3D"
+  train_pm_encoder: False
+  vision:
+    lr: 1e-5
+  generation:
+    max_new_tokens: 16
+    ignore_index: -100
+  heads:
+    head_list: ["coca_decoder_head"]
+    coca_decoder_head:
+      name: "City3DQA1CoCaDecoderTextHead"
+      lr: 1e-4
+      args:
+        vocab_size: 49408
+        d_model: 512
+        scene_dim: 512
+        question_dim: 512
+        num_layers: 4
+        num_heads: 8
+        ff_mult: 4
+        dropout: 0.1
+        max_text_len: 64
+        max_question_len: 128
+        max_view_id: 1024
+        pad_token_id: 49407
+        bos_token_id: 49406
+        eos_token_id: 49407
+        use_question_tokens: True
+        use_view_position: True
+  loss_list: ["City3DQA1CoCaDecoderGenerationLoss"]
+  vis_loss_list: ["City3DQA1CoCaDecoderGenerationLoss"]
