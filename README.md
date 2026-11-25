@@ -26,19 +26,6 @@ The model is trained in two stages. Scene-CLIP pretraining aligns view- and scen
 
 City3D-9.6K extends 193 City-3DQA urban scenes with 50 rendered viewpoints per scene. It contains 9,650 RGB views and aligned XYZ point maps, view captions, multi-view scene graphs, and scene-level captions. The annotations provide complementary visual, geometric, semantic, and relational supervision for the two training stages.
 
-## Repository Layout
-
-| Path | Description |
-|---|---|
-| `configs/city3dqa1_pretrain_pt.yaml` | Scene-CLIP pretraining configuration |
-| `scripts/pretraining/pretrain_city3dqa1.sh` | Scene-CLIP pretraining launcher |
-| `scripts/vqa3d/` | Multimodal decoding training and inference scripts in the source archive |
-| `run_city3dqa1.py` | Scene-CLIP training entry point |
-| `run_city3dqa1_qa_msg_caption_qwen_visual_cross_attention.py` | Qwen visual cross-attention decoding entry point |
-| `src/data/` | City3DQA data loading and wrappers |
-| `src/model/`, `src/modules/` | Scene encoder and multimodal decoder models |
-| `src/optim/loss/`, `src/trainer/` | Training losses and trainers |
-
 ## Checkpoints
 
 The released Scene-CLIP pretraining and multimodal decoding checkpoints can be downloaded from the [3D CoCa v3 Hugging Face repository](https://huggingface.co/AIGeeksGroup/3DCoCav3/tree/main).
