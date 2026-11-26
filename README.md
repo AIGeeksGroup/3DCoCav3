@@ -1,6 +1,15 @@
-<div align="center">
-
 <h1>3D CoCa v3: Contrastive Learners with Scene Graphs for Urban Scene Understanding</h1>
+
+This is the official repository for the paper:
+
+> 3D CoCa v3: Contrastive Learners with Scene Graphs for Urban Scene Understanding
+>
+> [Nannan Zhang](https://scholar.google.com/citations?user=sshKuUMAAAAJ)\*, [Ting Huang](https://believeht029.github.io/)\*, [Zeyu Zhang](https://steve-zeyu-zhang.github.io/)\*<sup>†</sup>, [Haoyu Chen](https://mikecheninoulu.github.io/), [Yanjie Zhu](https://scholar.google.com/citations?user=X2mIoQ4AAAAJ&hl=en)<sup>‡</sup>, and [Hao Tang](https://ha0tang.github.io/)<sup>‡</sup>
+>
+> <sup>*</sup>Equal contribution. <sup>†</sup>Project lead. <sup>‡</sup>Corresponding authors.
+>
+> ### [Paper](https://arxiv.org/abs/2611.33835) | [HF Paper](https://huggingface.co/papers/2611.33835) | [Model](https://huggingface.co/AIGeeksGroup/3DCoCav3)
+
 
 <p><strong>Scene-graph-enhanced contrastive pretraining and multimodal decoding for urban 3D understanding.</strong></p>
 
@@ -8,7 +17,6 @@
   <img src="assets/3dcocav3_teaser.png" alt="3D CoCa v3 teaser: urban Scene-CLIP pretraining and multimodal decoding" width="100%">
 </p>
 
-</div>
 
 3D CoCa v3 extends contrastive and generative 3D vision-language learning to large-scale urban scenes. It learns geometry-aware representations from aligned multi-view RGB images and XYZ point maps, uses multi-view scene graphs (MSG) to provide structured relational descriptions, and answers urban scene questions with a multimodal decoder conditioned on visual features and question-relevant captions.
 
